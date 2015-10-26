@@ -1,2 +1,5 @@
 
-(setq js-indent-level 8)
+(
+ (javascript-mode . ((js-indent-level . 8)))
+ )
+

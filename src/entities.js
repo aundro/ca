@@ -112,7 +112,7 @@ window.entities = [];
 
 function init_entities()
 {
-        var data = document.getElementById("data");
+        var data = document.getElementById("entities");
         var descs = data.innerText.split("EOE");
         descs.forEach(
                 function (desc) {
