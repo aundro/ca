@@ -1,0 +1,15 @@
+<html>
+  <head>
+    @include{../tools/header_fragment.html}
+    <title>Camarilla Ardente: Clans</title>
+    <link rel="stylesheet" href="clans.css" type="text/css" />
+    <script src="clans.js"></script>
+  </head>
+  <body onload="init_entities() && layout()">
+    <div id="data">
+      @include{../data/entities.dat}
+    </div>
+    <div id="graph">
+    </div>
+  </body>
+</html>
