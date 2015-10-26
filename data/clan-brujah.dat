@@ -1,0 +1,34 @@
+
+id: brujah
+name: Brujah
+type: clan
+tags: clan, camarilla
+group: camarilla
+
+Surnommés les “Racailles”, ils sont indisciplinés, contestataires et
+flirtent toujours avec la limite en ce qui concerne la politique de la
+Camarilla. Ils sont quasi ouvertement en lien avec le Mouvement Anarch
+qu’ils considèrent d’ailleurs comme ayant le droit de se revendiquer
+de la Camarilla puisqu’ils en défendent la plupart des principes sauf
+celui de lécher les bottes des Sang Bleu. Le Clan Brujah était réputé
+pour sa sagesse et sa tempérance à l’époque de l’antiquité mais ils
+sont tout au mieux vus aujourd’hui comme des libres penseurs ou des
+rebelles. Et pourtant, s’ils se laissent parfois emporter par la
+passion et sont plutôt craints pour la violence dont ils peuvent faire
+preuve, c’est un clan qui est régit par des principes louables et
+forts, en commençant par la liberté de pensée et de parole. Ils
+considèrent à leur façon aussi être les plus grands défenseurs de la
+Camarilla en l'empêchant de verser dans la sclérose imposée par les
+Ventrues et leurs larbins.  Les Disciplines du clan sont la Puissance,
+la Célérité et la Présence
+
+EOE
+
+id: primo_brujah
+name: Primogène Brujah (TBD)
+type: vampire
+tags: primogene
+group: brujah
+influence: 100
+
+Unknown.

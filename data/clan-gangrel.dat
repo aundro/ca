@@ -1,0 +1,91 @@
+
+id: gangrel
+name: Gangrel
+type: clan
+tags: clan, camarilla
+group: camarilla
+
+Surnommés les “Sauvages”, ils ont traversé les époques
+et les civilisations sans jamais abandonner une Nature qui leur est si
+chère. Ils sont même soupçonnés de pactiser avec les garous, ennemis
+millénaires des damnés avec qui ils partagent le dialogue avec les
+esprits. On leur reproche parfois de mettre en danger la Mascarade à
+cause des traces qui marquent pour des mois leur corps à la suite de
+frénésies.  C’est un clan à part au sein de la Camarilla.  La plupart
+des autres damnés pensent qu’ils aiment vivre dans les campagnes mais,
+contrairement aux préjugés qui veulent que ce soit des hippies qui
+vivent dans les bois, nombre d’entre eux se sont merveilleusement
+adaptés à la vie urbaine au point de former une lignée à part entière.
+Au sein de la secte, on retrouve souvent des Gangrels dans des
+fonctions musclées car ce sont de redoutables guerriers.  Les
+Disciplines du clan sont l’Alpha Spiritus avec soit la Force d’Âme et
+la Célérité ou la Dissimulation et l’Augure selon la lignée.
+
+EOE
+
+id: reginald_sigurson
+name: Réginald Sigurson
+brief: Primogène du Clan
+type: vampire
+tags: primogene
+group: gangrel
+influence: 100
+
+Réginald Sigurson est certainement l’un des Gangrels et l’un des
+caïnites les plus anciens de la Principauté. Même pour un Sauvage,
+Réginald constitue un stéréotype. Son physique témoigne largement de
+ses origines scandinaves.
+
+EOE
+
+id: elizabeth_greenwald
+name: Elizabeth "Lily" Greenwald
+brief: Sauvage d’influence
+type: vampire
+group: gangrel
+influence: 50
+
+Elizabeth Greenwald est l’archétype même de la “girl”
+street-crédible. Pourtant, il ne faut pas prendre son look décalé et
+son apparence fluette en compte. Derrière ce regard angélique et ces
+attitudes de skatteuse se cache une Gangrel séculaire redoutable.  ses
+origines scandinaves.
+
+EOE
+
+id: mattias_svendsen
+name: Mattias Svendsen
+brief: Ethnologue Sauvage
+type: vampire
+group: gangrel
+influence: 50
+
+Mattias Svendsen est le fils d’un historien suédois et d’une
+archéologue belge spécialisée dans la culture viking. Né en 1931 sur
+l’île de Gotland, Mattias ne connaîtra pas son père, qui décède dans
+un accident de voiture la semaine de sa naissance. Sa mère, seule,
+devra se résigner à ramener Mattias en Belgique.  Elle l’élèvera seule
+et le scolarisera elle-même. Mattias suit sa mère sur tous ses
+sentiers de fouilles à travers la Scandinavie. De cette itinérance,
+Mattias héritera de deux passions : le folklore populaire viking et le
+goût du voyage. Sur base de ses influences, sa mère réussira à le
+faire inscrire à l’université de Stockholm où il suivra des cours
+d’archéologie populaire et de folklore. En 1957, il rentre en Belgique
+pour inhumer sa défunte mère. Il se voit offrir une chaire d’histoire
+et anthropologie scandinave à l’ULG et s’installe à Liège dans une
+impasse de la rue Hors-Château.
+
+EOE
+
+id: jules_thibaut
+name: Jules Thibaut
+brief: Goule du Primogène
+type: ghoul
+group: gangrel
+influence: 20
+
+Jules est né dans la Basse-Meuse, dans la région de Visé, en 1977. Son
+enfance fut marquée par la mort par overdose de sa grande sœur… Vivant
+dans une région considérée comme une plaque tournante de la rentrée de
+stupéfiants dans le pays, Jules a très vite compris qu’il fallait
+combattre ce fléau.
