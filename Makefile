@@ -29,8 +29,8 @@ $(BLD)/%.html: src/%.html \
 $(BLD)/%: src/% $(COMMON_DEPS) | dirs
 	cp $< $@
 
-$(BLD)/d3.js: 3rd-party/d3.js
+$(BLD)/d3.js: 3rd-party/d3.js | dirs
 	cp $< $@
 
-$(BLD)/d3.min.js: 3rd-party/d3.min.js
+$(BLD)/d3.min.js: 3rd-party/d3.min.js | dirs
 	cp $< $@
