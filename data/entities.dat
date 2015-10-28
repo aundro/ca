@@ -1,4 +1,6 @@
 
+<div id="entities" class="data-container">
+
 id: camarilla
 name: La Camarilla
 type: sect
@@ -20,3 +22,5 @@ EOE
 EOE
 
 @include{clan-gangrel.dat}
+
+</div>

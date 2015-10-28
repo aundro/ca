@@ -5,13 +5,9 @@
     <link rel="stylesheet" href="entity.css" type="text/css" />
     <script src="entity.js"></script>
   </head>
-  <body onload="init_entities() && layout()">
-    <div id="entities" class="data-container">
-      @include{../data/entities.dat}
-    </div>
-    <div id="links" class="data-container">
-      @include{../data/links.dat}
-    </div>
+  <body onload="init_entities() && init_links() && layout()">
+    @include{../data/entities.dat}
+    @include{../data/links.dat}
     <div id="graph">
     </div>
   </body>

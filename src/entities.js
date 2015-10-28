@@ -5,36 +5,21 @@ function Entity(raw_desc)
         this.id = null;
         this.name = null;
         this.type = null;
-        this.body = null;
+        this.body = [];
         this.tags = [];
 
-        var Parse = {
-                INITIAL : 0,
-                HEADER : 1,
-                BODY : 2
-        };
-        var currently = Parse.INITIAL;
-        var body_lines = [];
-        var lines = raw_desc.split("\n"), i, n, line, match, match_kw, match_val;
-        for ( i = 0, n = lines.length; i < n; ++i )
-        {
-                line = lines[i].trim();
-                if ( line !== "" )
+        parse_el_cheapo_description(
+                raw_desc,
                 {
-                        if ( currently === Parse.INITIAL )
+                        scope : this,
+                        header_line : function (line)
                         {
-                                currently = Parse.HEADER;
-                                --i; // redo line
-                                continue;
-                        }
-                        else if ( currently === Parse.HEADER )
-                        {
-                                match = this._HEADER_LINE_REGEX.exec(line);
+                                var match = this._HEADER_LINE_REGEX.exec(line);
                                 if ( !match )
                                         throw "Couldn't parse header line: \""
                                                 + line + "\"";
-                                match_kw = match[1];
-                                match_val = match[2];
+                                var match_kw = match[1];
+                                var match_val = match[2];
                                 if ( match_kw === "tags" )
                                         match_val = ",".split(match_val).map(
                                                 function (tag)
@@ -42,18 +27,12 @@ function Entity(raw_desc)
                                                         return tag.trim();
                                                 });
                                 this[match_kw] = match_val;
-                        }
-                        else // Parse.BODY
+                        },
+                        body_line : function (line)
                         {
-                                body_lines.push(line);
+                                this.body.push(line);
                         }
-                }
-                else
-                {
-                        if ( currently === Parse.HEADER )
-                                currently = Parse.BODY;
-                }
-        }
+                });
 
         if ( !this.id ) throw "Missing 'id' from \"" + raw_desc + "\"";
         if ( !this.type ) throw "Missing 'type' from \"" + raw_desc + "\"";
@@ -72,7 +51,8 @@ function Entity(raw_desc)
                         throw "Missing influence for \"" + this.id + "\"";
         }
 
-        this.body = body_lines;
+        if ( this.body.length <= 0 )
+                throw "No description for \"" + raw_desc + "\"";
 }
 
 // ---------------------------------------------------------------------------
