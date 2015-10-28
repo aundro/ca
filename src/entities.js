@@ -88,6 +88,14 @@ Entity.prototype.to_d3_node = function(sizer)
         };
 };
 
+function get_entity_by_id(id)
+{
+        var i, n;
+        for ( i = 0, n = window.entities.length; i < n; ++i )
+                if ( window.entities[i].id === id )
+                        return window.entities[i];
+}
+
 window.entities = [];
 
 function init_entities()

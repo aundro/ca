@@ -28,30 +28,48 @@ function LinkSet(raw_desc)
                         },
                         body_line : function (line)
                         {
-                                var match = this._LINK_REGEX.exec(line), match_val, link;
+                                var match = this._LINK_REGEX.exec(line), body, link;
                                 if ( !match )
                                 {
                                         if ( this.links.length <= 0 )
                                                 throw "No link yet";
                                         // additional line for last link
                                         link = this.links[this.links.length - 1]
-                                        match_val = line;
+                                        body = line;
                                 }
                                 else
                                 {
                                         link = new Link(match[1]);
                                         this.links.push(link);
-                                        match_val = match[2];
+                                        body = match[2];
                                 }
-                                link.body.push(match_val);
+                                link.body.push(body);
                         }
                 });
 
         if ( !this.from || !this.to )
                 throw "Missing <from>::<to> relationship from \"" + raw_desc + "\"";
+
+        if ( !get_entity_by_id(this.from) )
+                throw "Unknown entity with 'from' id: \"" + this.from + "\"";
+
+        if ( !get_entity_by_id(this.to) )
+                throw "Unknown entity with 'to' id: \"" + this.to + "\"";
 }
 
 LinkSet.prototype._LINK_REGEX = new RegExp("^([a-zA-Z0-9]*):\\s*(.*)")
+
+function get_linksets_for_id(id)
+{
+        var i, n, found = [], cur;
+        for ( i = 0, n = window.linksets.length; i < n; ++i )
+        {
+                cur = window.linksets[i];
+                if ( cur.from === id || cur.to === id )
+                        found.push(cur);
+        }
+        return found;
+}
 
 window.linksets = []
 

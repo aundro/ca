@@ -48,3 +48,22 @@ function parse_el_cheapo_description(raw_desc, handlers)
                 }
         }
 }
+
+window.search_params_get = {};
+(function ()
+ {
+         var tele;
+         var kvps = location.search.replace('\?','').split('&');
+         var i, n, kvp;
+         for ( i = 0, n = kvps.length; i < n; ++i )
+         {
+                 kvp = kvps[i].split("=");
+                 if ( kvp.length !== 2 )
+                 {
+                         console.log("Ignoring malformed \"" + kvps[i] + "\"");
+                         continue;
+                 }
+                 window.search_params_get[kvp[0]] = decodeURIComponent(kvp[1]);
+         }
+ })();
+
