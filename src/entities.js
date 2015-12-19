@@ -21,7 +21,7 @@ function Entity(raw_desc)
                                 var match_kw = match[1];
                                 var match_val = match[2];
                                 if ( match_kw === "tags" )
-                                        match_val = ",".split(match_val).map(
+                                        match_val = match_val.split(",").map(
                                                 function (tag)
                                                 {
                                                         return tag.trim();
@@ -76,6 +76,33 @@ Entity.prototype.is_clan = function()
 Entity.prototype.is_actor = function()
 {
         return this.type === "vampire" || this.type === "ghoul";
+};
+
+// ---------------------------------------------------------------------------
+Entity.prototype.is_primogene = function()
+{
+        return this.is_actor() && this.has_tag("primogene");
+};
+
+// ---------------------------------------------------------------------------
+Entity.prototype.has_tag = function(tag)
+{
+        return this.tags.indexOf(tag) > -1;
+};
+
+// ---------------------------------------------------------------------------
+Entity.prototype.get_primogene = function()
+{
+    if ( !this.is_clan() )
+	return;
+
+    var i, n, ent;
+    for ( i = 0, n = window.entities.length; i < n; ++i )
+    {
+	ent = window.entities[i];
+	if ( ent.is_primogene() && ent.group === this.id )
+	    return ent;
+    }
 };
 
 // ---------------------------------------------------------------------------

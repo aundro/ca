@@ -49,21 +49,26 @@ function parse_el_cheapo_description(raw_desc, handlers)
         }
 }
 
-window.search_params_get = {};
+window.search_params_get = null;
+window.anchor_params = null;
 (function ()
  {
-         var tele;
-         var kvps = location.search.replace('\?','').split('&');
-         var i, n, kvp;
+     function parse_kvps_str(kvps_str)
+     {
+         var i, n, kvp, obj = {}, kvps = kvps_str.split('&');
          for ( i = 0, n = kvps.length; i < n; ++i )
          {
-                 kvp = kvps[i].split("=");
-                 if ( kvp.length !== 2 )
-                 {
-                         console.log("Ignoring malformed \"" + kvps[i] + "\"");
-                         continue;
-                 }
-                 window.search_params_get[kvp[0]] = decodeURIComponent(kvp[1]);
+             kvp = kvps[i].split("=");
+             if ( kvp.length !== 2 )
+             {
+                 console.log("Ignoring malformed \"" + kvps[i] + "\"");
+                 continue;
+             }
+             obj[kvp[0]] = decodeURIComponent(kvp[1]);
          }
- })();
+	 return obj;
+     }
 
+     window.search_params_get = parse_kvps_str(location.search.replace('\?',''));
+     window.anchor_params = parse_kvps_str(location.hash.replace('#', ''));
+ })();

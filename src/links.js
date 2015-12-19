@@ -39,8 +39,7 @@ function LinkSet(raw_desc)
                                 }
                                 else
                                 {
-                                        link = new Link(match[1]);
-                                        this.links.push(link);
+				        link = this.add_link(match[1]);
                                         body = match[2];
                                 }
                                 link.body.push(body);
@@ -57,29 +56,87 @@ function LinkSet(raw_desc)
                 throw "Unknown entity with 'to' id: \"" + this.to + "\"";
 }
 
+// ---------------------------------------------------------------------------
 LinkSet.prototype._LINK_REGEX = new RegExp("^([a-zA-Z0-9]*):\\s*(.*)")
+
+// ---------------------------------------------------------------------------
+LinkSet.prototype.add_link = function(kind)
+{
+    var link = new Link(kind);
+    this.links.push(link);
+    return link;
+}
+
 
 function get_linksets_for_id(id)
 {
-        var i, n, found = [], cur;
-        for ( i = 0, n = window.linksets.length; i < n; ++i )
-        {
-                cur = window.linksets[i];
-                if ( cur.from === id || cur.to === id )
-                        found.push(cur);
-        }
-        return found;
+    var i, n, found = [], cur;
+    for ( i = 0, n = window.linksets.length; i < n; ++i )
+    {
+        cur = window.linksets[i];
+        if ( cur.from === id || cur.to === id )
+            found.push(cur);
+    }
+    return found;
+}
+
+function get_linkset(from, to, opts)
+{
+    opts = opts || {};
+    var tmp;
+    if ( from > to )
+    {
+	tmp = from;
+	from = to;
+	to = tmp;
+    }
+
+    var linksets = get_linksets_for_id(from), linkset, i, n;
+    for ( i = 0, n = linksets.length; i < n && !linkset; ++i )
+	if ( linksets[i].from === from && linksets[i].to === to )
+	    linkset = linksets[i];
+
+    if ( !linkset && opts.create )
+    {
+	linkset = new LinkSet(from + "::" + to);
+	window.linksets.push(linkset);
+    }
+    return linkset;
 }
 
 window.linksets = []
 
-function init_links()
+function init_links(opts)
 {
-        var data = document.getElementById("links");
-        var descs = data.innerText.split("EOL");
-        descs.forEach(
-                function (desc) {
-                        window.linksets.push(new LinkSet(desc));
-                });
-        return true;
+    opts = opts || {};
+    var i, n, ent, primo, group, linkset, link;
+    var data = document.getElementById("links");
+    var descs = data.innerText.split("EOL");
+    descs.forEach(
+        function (desc) {
+            window.linksets.push(new LinkSet(desc));
+        });
+
+    if ( opts.auto_add_primo )
+    {
+	for ( i = 0, n = window.entities.length; i < n; ++i )
+	{
+	    ent = window.entities[i];
+	    if ( ent.is_actor() && !ent.is_primogene() )
+	    {
+		group = get_entity_by_id(ent.group);
+		if ( group )
+		{
+		    primo = group.get_primogene();
+		    if ( primo )
+		    {
+			linkset = get_linkset(ent.id, primo.id, {create : true});
+			linkset.add_link("primogene").body.push("Primogene");
+		    }
+		}
+	    }
+	}
+    }
+
+    return true;
 }

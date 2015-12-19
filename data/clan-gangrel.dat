@@ -100,3 +100,25 @@ group: gangrel
 influence: 1
 
 Todor est ne...
+
+EOE
+
+id: ewa
+name: Ewa
+brief: Partie en Amerique, elle fut de retour au 19e siecle
+type: vampire
+group: gangrel
+influence: 1
+
+Pas d'infos
+
+EOE
+
+id: rhiannon
+name: Rhiannon
+brief: Infante d'Ewa, adaptee au mode de vie urbain
+type: vampire
+group: gangrel
+influence: 1
+
+Pas d'infos

@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="entity.css" type="text/css" />
     <script src="entity.js"></script>
   </head>
-  <body onload="init_entities() && init_links() && layout()">
+  <body onload="init_entities() && init_links({auto_add_primo : true}) && layout()">
     @include{../data/entities.dat}
     @include{../data/links.dat}
     <div id="graph">
