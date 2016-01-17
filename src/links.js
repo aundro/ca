@@ -1,7 +1,8 @@
 
-function Link(kind)
+function Link(kind, metadata)
 {
         this.kind = kind;
+        this.metadata = metadata;
         this.body = [];
 }
 
@@ -28,20 +29,35 @@ function LinkSet(raw_desc)
                         },
                         body_line : function (line)
                         {
-                                var match = this._LINK_REGEX.exec(line), body, link;
-                                if ( !match )
-                                {
-                                        if ( this.links.length <= 0 )
-                                                throw "No link yet";
-                                        // additional line for last link
-                                        link = this.links[this.links.length - 1]
-                                        body = line;
-                                }
-                                else
-                                {
+			        var match = this._BLOOD_LINK_REGEX.exec(line), body, link;
+			        if ( match )
+           		        {
+				    // FIXME: Should always make blood the first link!
+
+				    // blood link
+				    link = this.add_link("blood", {"sire" : match[1]});
+				    body = match[2];
+				}
+    			        else
+			        {
+                                    match = this._LINK_REGEX.exec(line);
+                                    if ( match )
+                                    {
+					// regular link
+					if ( match[1] === "blood" ) // blood link, but didn't match regex? Error
+					    alert("Invalid 'blood' link: " + line);
 				        link = this.add_link(match[1]);
                                         body = match[2];
-                                }
+                                    }
+                                    else
+                                    {
+                                        // additional line for last link
+                                        if ( this.links.length <= 0 )
+                                                throw "No link yet";
+                                        link = this.links[this.links.length - 1]
+                                        body = line;
+                                    }
+				}
                                 link.body.push(body);
                         }
                 });
@@ -57,12 +73,18 @@ function LinkSet(raw_desc)
 }
 
 // ---------------------------------------------------------------------------
-LinkSet.prototype._LINK_REGEX = new RegExp("^([a-zA-Z0-9]*):\\s*(.*)")
+(function ()
+ {
+     var _ID = "[a-zA-Z0-9_\\-]*"; //
+     var _LT = "[a-zA-Z0-9]*";     // link type
+     LinkSet.prototype._BLOOD_LINK_REGEX = new RegExp("^blood:(" + _ID + "):\\s*(.*)")
+     LinkSet.prototype._LINK_REGEX       = new RegExp("^(" + _LT + "):\\s*(.*)")
+ }) ();
 
 // ---------------------------------------------------------------------------
-LinkSet.prototype.add_link = function(kind)
+LinkSet.prototype.add_link = function(kind, metadata)
 {
-    var link = new Link(kind);
+    var link = new Link(kind, metadata);
     this.links.push(link);
     return link;
 }

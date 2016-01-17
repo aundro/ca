@@ -25,6 +25,8 @@ EOE
 
 id: reginald_sigurson
 name: Réginald Sigurson
+handle: Réginald
+pics: Arnaud Liepin .jpg
 brief: Primogène du Clan
 type: vampire
 tags: primogene
@@ -39,9 +41,12 @@ ses origines scandinaves.
 EOE
 
 id: elizabeth_greenwald
-name: Elizabeth "Lily" Greenwald
-brief: Sauvage d’influence
+name: Elizabeth Greenwald
+handle: Lily
+pics:  Pauline Berger.jpg
+brief: Sauvage d’influence, legat gangrel
 type: vampire
+tags: legat
 group: gangrel
 influence: 50
 
@@ -55,6 +60,8 @@ EOE
 
 id: mattias_svendsen
 name: Mattias Svendsen
+handle: Mattias
+pics:  Adrien Vandendriessche.jpg
 brief: Ethnologue Sauvage
 type: vampire
 group: gangrel
@@ -79,6 +86,7 @@ EOE
 
 id: jules_thibaut
 name: Jules Thibaut
+handle: Jules
 brief: Goule du Primogène
 type: ghoul
 group: gangrel
@@ -93,7 +101,9 @@ combattre ce fléau.
 EOE
 
 id: todor_vujacic
-name: Todor (Thomas) Vujacic
+name: Todor Vujacic
+handle: Todor
+pics: Arnaud Diedren.jpg
 brief: Nouveau venu, introduit par @elizabeth_greenwald, etreint par...
 type: vampire
 group: gangrel
@@ -122,3 +132,27 @@ group: gangrel
 influence: 1
 
 Pas d'infos
+
+EOE
+
+id: julian
+name: Julian
+handle: Julian
+brief: Vit dans les Pyrenees, revenu pour le rituel des voix ascendentes 2015
+type: vampire
+group: gangrel
+influence: 1
+
+Pas d'infos
+
+EOE
+
+id: charo
+name: Charo
+pics: Sarah Putlz.jpg
+brief: Vit dans les Pyrenees, sur Liege pour raisons de misbrouilles avec les Lasombras (Sabbat) la-bas en Espagne.
+type: vampire
+group: gangrel
+influence: 1
+
+Charo a bute un chef de clan + 3 vampires dans les Pyrenees Espagnoles. Du coup, elle est en villegiature a Liege ou elle attend que tout cela se tasse. Seulement voila: il semblerait que le Sabbat fasse des incursions en cite ardente. Suspense!

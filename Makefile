@@ -3,7 +3,8 @@
 
 INJECT_SCRIPT=tools/inject.py
 INJECT=python $(INJECT_SCRIPT)
-BLD=build
+#BLD=build
+BLD=alt_build
 SRC_FILES=$(wildcard src/*)
 DST_FILES=$(patsubst src/%,$(BLD)/%,$(SRC_FILES))
 

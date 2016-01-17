@@ -30,3 +30,13 @@ path.link_blood
     stroke: red;
     stroke-width: 3px;
 }
+
+text.handle
+{
+    text-anchor: middle;
+}
+
+marker path
+{
+    fill: red;
+}

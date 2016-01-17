@@ -4,6 +4,7 @@ function Entity(raw_desc)
         this.raw = raw_desc;
         this.id = null;
         this.name = null;
+        this.handle = null;
         this.type = null;
         this.body = [];
         this.tags = [];
@@ -110,6 +111,7 @@ Entity.prototype.to_d3_node = function(sizer)
 {
         return {
                 name : this.name,
+                handle : this.handle || this.name,
                 size : sizer(this),
                 entity : this
         };

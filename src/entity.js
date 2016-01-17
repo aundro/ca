@@ -1,4 +1,12 @@
 
+diam_focused = 80
+diam_others = 60
+links_distances = {
+    "blood" : diam_focused * 2,
+    undefined : diam_focused * 4
+}
+
+
 function layout()
 {
     // var focused_id = window.anchor_params["id"];
@@ -7,7 +15,7 @@ function layout()
     if ( isNaN(levels) )
 	levels = 1;
 
-    function sizer() { return 10; }
+    function sizer(entity) { return (entity.id === focused_id ? diam_focused : diam_others) / 2; }
 
     var d3_nodes = [];
     var d3_links = [];
@@ -47,6 +55,25 @@ function layout()
 
 	// add entity
 	var entity_node = entity.to_d3_node(sizer);
+
+	// picture available? register pattern
+	var pics = entity.pics, pic, pat_id, dim;
+	if ( pics )
+	{
+	    pic = pics.split(",")[0];
+	    pat_id = "pattern_" + entity.id;
+	    dim = entity.id === focused_id ? diam_focused : diam_others;
+	    defs.append("pattern")
+		.attr("id", pat_id)
+		.attr("width", "1")
+		.attr("height", "1")
+		.append("image")
+		.attr("xlink:href", "Photos/" + pic)
+		.attr("width", dim)
+		.attr("height", dim);
+	    entity_node.pattern_id = pat_id;
+	}
+
 	d3_nodes.push(entity_node);
 
 	// add links, and neighbors
@@ -80,6 +107,55 @@ function layout()
 	}
 	return entity_node;
     }
+
+    var w = window.innerWidth, h = window.innerHeight;
+    var svg = d3.select("#graph").append("svg");
+    var defs = svg.append("defs");
+    var vis = svg
+	.append("svg:g")
+	.call(d3.behavior.zoom().on("zoom", rescale))
+	.append("svg:g");
+
+    // stuff a rectangle in the background, that will grab events if no other element does it
+    vis.append('svg:rect', '.event_grabber')
+	.attr('width', w)
+	.attr('height', h)
+	.attr('fill', 'white');
+
+    // some utilities markers
+    var is_in, is_focused;
+    for ( is_focused = 0; is_focused < 2; ++is_focused)
+    {
+	for ( is_in = 0; is_in < 2; ++is_in )
+	{
+	    var arrow_sz = 10;
+	    var mw = (is_focused ? diam_focused : diam_others) + arrow_sz;
+	    var marker = defs.append("marker")
+		.attr("id", "marker_blood_" + (is_in ? "in" : "out") + (is_focused ? "_focused" : ""))
+		.attr("markerWidth", mw)
+		.attr("markerHeight", mw)
+		.attr("refX", mw/2)
+		.attr("refY", mw/2)
+		.attr("orient", "auto")
+		.attr("markerUnits", "userSpaceOnUse");
+
+	    var path = [], mw_on_2 = mw/2, arrow_sz_on_2 = arrow_sz/2;
+	    if ( is_in )
+	    {
+		path.push("M" + mw + "," + String(mw_on_2 - arrow_sz_on_2));
+		path.push("L" + (mw - arrow_sz) + "," + mw_on_2);
+		path.push("" + mw + "," + (mw_on_2 + arrow_sz_on_2));
+	    }
+	    else
+	    {
+		path.push("M0," + String(mw_on_2 - arrow_sz_on_2));
+		path.push("L" + arrow_sz + "," + mw_on_2);
+		path.push("0," + (mw_on_2 + arrow_sz_on_2));
+	    }
+	    marker.append("path").attr("d", path.join(" "));
+	}
+    }
+
     import_neighbors(entity, levels);
 
 /*
@@ -102,41 +178,64 @@ function layout()
     }
 */    
 
-    var w = 600,
-        h = 600,
-        node,
-        link,
-        root;
-
-    var force = d3.layout.force()
+    var node, link, root, force = d3.layout.force()
         .on("tick", tick)
     // .charge(function(d) { return d._children ? -d.size / 100 : -30; })
-        .charge(function(d) { return -30; })
-    // .linkDistance(function(d) { return d.target._children ? 80 : 30; })
-        .linkDistance(function(d) { return 100; })
+        .charge(function(d) { return -5000; })
+        .linkDistance(
+	    function(link)
+	    {
+		var lkind = link.link.kind;
+		return lkind in links_distances
+		    ? links_distances[lkind]
+		    : links_distances[undefined];
+	    })
+        // .linkStrength(
+	//     function(link)
+	//     {
+	// 	return link.link.kind === "blood" ? 1 : 0.1;
+	//     })
         .size([w, h - 160]);
 
-    var svg = d3.select("#graph").append("svg");
     svg.attr("width", w).attr("height", h);
 
     force.nodes(d3_nodes).links(d3_links).start();
 
-    var link_sel = svg.append("svg:g").selectAll("path").data(force.links());
+    var link_sel = vis.append("svg:g").selectAll("path").data(force.links());
+
+    function get_marker_for_link(d, is_marker_start)
+    {
+	var marker = [];
+	if ( d.link.kind === "blood" )
+	{
+	    var sire = d.link.metadata["sire"];
+	    if ( is_marker_start && d.target.entity.id === sire
+              || !is_marker_start && d.source.entity.id === sire )
+	    {
+		marker.push("url(#marker_blood_");
+		marker.push((is_marker_start && d.target.entity.id === sire) ? "in" : "out");
+		if ( is_marker_start && d.source.entity.id === focused_id
+                  || !is_marker_start && d.target.entity.id === focused_id )
+		{
+		    marker.push("_focused");
+		}
+	    }		    
+	}
+	return marker.join("");
+    }
 
     // links management
-    link_sel.enter().append("svg:path")
-	.attr("class",
-	      function(d)
-	      {
-		  return "link link_" + d.link.kind;
-	      })
-	.on("mouseover", function(d) { ; });
+    link_sel.enter()
+        .append("svg:path")
+    	.attr("class", function(d) { return "link link_" + d.link.kind; })
+	.attr("marker-start", function(d) { return get_marker_for_link(d, true); })
+	.attr("marker-end", function(d) { return get_marker_for_link(d, false); })
+    	.on("mouseover", function(d) { ; });
     link_sel.exit().remove()
 
 
     // vertices management
-    function vertex_data_is_focused_id(d) { return d.entity.id === focused_id; }
-    var node_sel = svg.selectAll("circle")
+    var node_sel = vis.selectAll("circle.entity")
         .data(d3_nodes, function(d) { return d.name; });
 
     node_sel.transition()
@@ -146,22 +245,23 @@ function layout()
         .attr("class", function(d) 
 	      {
 		  var parts = ["entity"];
-		  if ( vertex_data_is_focused_id(d) )
+		  if ( d.entity.id === focused_id )
 		      parts.push("focused_entity");
 		  return parts.join(" ");
 	      })
         .attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; })
-        .attr("r", function(d) { return d.size * (vertex_data_is_focused_id(d) ? 2 : 1); })
-    // .on("click", click)
+        .attr("r", function(d) { return d.size; })
+	.attr("style", function(d) { return d.pattern_id ? "fill: url(#" + d.pattern_id + ")" : ""; })
         .call(force.drag);
     node_sel.exit().remove();
 
     // vertices labels
-    var text_sel = svg.selectAll("text")
+    var text_sel = vis.selectAll("text")
 	.data(d3_nodes, function(d) { return d.name; });
-    text_sel.enter().append("text").text(function(d) { return d.name; });
+    text_sel.enter().append("text").attr("class", "handle").text(function(d) { return d.handle; });
     text_sel.exit().remove();
+
 
 /*
     setTimeout(
@@ -181,15 +281,30 @@ function layout()
 	}, 5000);
 */
 
+    // http://bl.ocks.org/benzguo/4370043
+    function rescale()
+    {
+	trans=d3.event.translate;
+	scale=d3.event.scale;
+	vis.attr("transform",
+		 "translate(" + trans + ")"
+		 + " scale(" + scale + ")");
+    }
+
+    function mousedown()
+    {
+	// alert("Woo");
+	// vis.call(d3.behavior.zoom().on("zoom"), rescale);
+    }
+
     function tick()
     {
-	link_sel
-	    .attr("d",
+	link_sel.attr("d",
 		  function(d)
 		  {
 		      var dx = d.target.x - d.source.x,
 			  dy = d.target.y - d.source.y,
-			  dr = 75 / d.link_num; 
+			  dr = d.link.kind === "blood" ? 0 : (300 / d.link_num);
 		      return "M" + d.source.x + "," + d.source.y + 
 			  "A" + dr + "," + dr + " 0 0,1 " + 
 			  d.target.x + "," + d.target.y;
@@ -200,7 +315,7 @@ function layout()
             .attr("cy", function(d) { return d.y; });
 
 	text_sel
-            .attr("transform", function(d) { return "translate(" + (d.x) + "," + (d.y) + ")"; });
+            .attr("transform", function(d) { return "translate(" + (d.x) + "," + (d.y - d.size) + ")"; });
             // .attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
     }
 }
