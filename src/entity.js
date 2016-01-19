@@ -69,6 +69,7 @@ function layout()
 		.attr("height", "1")
 		.append("image")
 		.attr("xlink:href", "Photos/" + pic)
+		.attr("preserveAspectRatio", "xMidYMid slice")
 		.attr("width", dim)
 		.attr("height", dim);
 	    entity_node.pattern_id = pat_id;
