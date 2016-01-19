@@ -107,6 +107,16 @@ Entity.prototype.get_primogene = function()
 };
 
 // ---------------------------------------------------------------------------
+Entity.prototype.get_neighbors = function()
+{
+    var neighbors = [];
+    var linksets = get_linksets(this), i, n;
+    for ( i = 0, n = linksets.length; i < n; ++i )
+	neighbors.push(linksets[i].get_other(this));
+    return neighbors;
+}
+
+// ---------------------------------------------------------------------------
 Entity.prototype.to_d3_node = function(sizer)
 {
         return {

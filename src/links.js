@@ -9,8 +9,8 @@ function Link(kind, metadata)
 function LinkSet(raw_desc)
 {
         this.raw = raw_desc;
-        this.from = null;
-        this.to = null;
+    var from = null;
+    var to = null;
         this.links = []
 
         parse_el_cheapo_description(
@@ -24,8 +24,8 @@ function LinkSet(raw_desc)
                                         throw "Couldn't parse header line: \""
                                         + line + "\"";
                                 
-                                this.from = parts[0];
-                                this.to = parts[1];
+                                from = parts[0];
+                                to = parts[1];
                         },
                         body_line : function (line)
                         {
@@ -62,14 +62,16 @@ function LinkSet(raw_desc)
                         }
                 });
 
-        if ( !this.from || !this.to )
+        if ( !from || !to )
                 throw "Missing <from>::<to> relationship from \"" + raw_desc + "\"";
 
-        if ( !get_entity_by_id(this.from) )
-                throw "Unknown entity with 'from' id: \"" + this.from + "\"";
+        this.from = get_entity_by_id(from);
+        if ( !this.from )
+            throw "Unknown entity with 'from' id: \"" + from + "\"";
 
-        if ( !get_entity_by_id(this.to) )
-                throw "Unknown entity with 'to' id: \"" + this.to + "\"";
+        this.to = get_entity_by_id(to);
+        if ( !this.to )
+            throw "Unknown entity with 'to' id: \"" + to + "\"";
 }
 
 // ---------------------------------------------------------------------------
@@ -89,38 +91,53 @@ LinkSet.prototype.add_link = function(kind, metadata)
     return link;
 }
 
+// ---------------------------------------------------------------------------
+LinkSet.prototype.concerns = function(entity)
+{
+    return this.from === entity || this.to === entity;
+}
 
-function get_linksets_for_id(id)
+// ---------------------------------------------------------------------------
+LinkSet.prototype.get_other = function(entity)
+{
+    if ( !this.concerns(entity) )
+	throw Exception("Cannot get other from " + id);
+    return this.from === entity ? this.to : this.from;
+}
+
+// ---------------------------------------------------------------------------
+function get_linksets(entity)
 {
     var i, n, found = [], cur;
     for ( i = 0, n = window.linksets.length; i < n; ++i )
     {
         cur = window.linksets[i];
-        if ( cur.from === id || cur.to === id )
+	if ( cur.concerns(entity) )
             found.push(cur);
     }
     return found;
 }
 
+// ---------------------------------------------------------------------------
 function get_linkset(from, to, opts)
 {
     opts = opts || {};
     var tmp;
-    if ( from > to )
+    if ( from.id > to.id )
     {
 	tmp = from;
 	from = to;
 	to = tmp;
     }
 
-    var linksets = get_linksets_for_id(from), linkset, i, n;
+    var linksets = get_linksets(from), linkset, i, n;
     for ( i = 0, n = linksets.length; i < n && !linkset; ++i )
 	if ( linksets[i].from === from && linksets[i].to === to )
 	    linkset = linksets[i];
 
     if ( !linkset && opts.create )
     {
-	linkset = new LinkSet(from + "::" + to);
+	linkset = new LinkSet(from.id + "::" + to.id);
 	window.linksets.push(linkset);
     }
     return linkset;
@@ -128,6 +145,7 @@ function get_linkset(from, to, opts)
 
 window.linksets = []
 
+// ---------------------------------------------------------------------------
 function init_links(opts)
 {
     opts = opts || {};
@@ -152,7 +170,7 @@ function init_links(opts)
 		    primo = group.get_primogene();
 		    if ( primo )
 		    {
-			linkset = get_linkset(ent.id, primo.id, {create : true});
+			linkset = get_linkset(ent, primo, {create : true});
 			linkset.add_link("primogene").body.push("Primogene");
 		    }
 		}

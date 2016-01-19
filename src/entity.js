@@ -5,17 +5,19 @@ links_distances = {
     "blood" : diam_focused * 2,
     undefined : diam_focused * 4
 }
-
+MAX_HIGHLIGHT_NEIGHBORS_DEPTH = 1
 
 function layout()
 {
-    // var focused_id = window.anchor_params["id"];
     var focused_id = window.search_params_get["id"];
     var levels = parseInt(window.search_params_get["levels"]);
     if ( isNaN(levels) )
 	levels = 1;
 
-    function sizer(entity) { return (entity.id === focused_id ? diam_focused : diam_others) / 2; }
+    function sizer(entity)
+    {
+	return (entity.id === focused_id ? diam_focused : diam_others) / 2;
+    }
 
     var d3_nodes = [];
     var d3_links = [];
@@ -78,12 +80,12 @@ function layout()
 	d3_nodes.push(entity_node);
 
 	// add links, and neighbors
-	var linksets = get_linksets_for_id(entity.id);
+	var linksets = get_linksets(entity);
 	var linkset, other, j, k, link, other_node, i, n;
 	for ( i = 0, n = linksets.length; i < n; ++i )
 	{
 	    linkset = linksets[i];
-	    other = get_entity_by_id(linkset.from === entity.id ? linkset.to : linkset.from);
+	    other = linkset.get_other(entity);
 
 	    // recurse add new neighbors
 	    other_node = import_neighbors(other, levels - 1);
@@ -157,27 +159,28 @@ function layout()
 	}
     }
 
-    import_neighbors(entity, levels);
-
-/*
-    for ( i = 0, n = linksets.length; i < n; ++i )
+    // some utilities filters
+    var i;
+    for ( i = 0; i <= MAX_HIGHLIGHT_NEIGHBORS_DEPTH; ++i )
     {
-        linkset = linksets[i];
-        ent = get_entity_by_id(
-            linkset.from === focused_id ? linkset.to : linkset.from);
-        node = ent.to_d3_node(sizer);
-        d3_nodes.push(node);
-	for ( j = 0, k = linkset.links.length; j < k; ++j )
-	{
-            d3_links.push({
-		source : d3_nodes[0],
-		target : node,
-		link : linkset.links[j],
-		link_num : j + 1
-            });
-	}
+	var filter = defs.append("filter");
+	filter.attr("id", "highlit_heighbor_depth_" + i)
+	    .attr("x", "-50%")
+	    .attr("y", "-50%")
+	    .attr("width", "200%")
+	    .attr("height", "200%");
+	filter.append("feGaussianBlur")
+	    .attr("in", "SourceGraphics")
+	    .attr("result", "offsetblur")
+	    .attr("stdDeviation", "15");
+	filter.append("feBlend")
+	    .attr("in", "SourceGraphic")
+	    .attr("in2", "offsetblur")
+	    .attr("mode", "normal");
     }
-*/    
+
+
+    import_neighbors(entity, levels);
 
     var node, link, root, force = d3.layout.force()
         .on("tick", tick)
@@ -242,6 +245,47 @@ function layout()
     node_sel.transition()
         .attr("r", function(d) { return d.size; });
 
+    function unclassify_all_entities()
+    {
+	for ( i = 0; i <= MAX_HIGHLIGHT_NEIGHBORS_DEPTH; ++i )
+	    node_sel.attr("filter", "");
+    }
+
+    function get_svg_node(entity)
+    {
+	return node_sel.filter(function (d) { return d.entity === entity; });
+    }
+
+    function entity_mouseenter(d)
+    {
+	unclassify_all_entities();
+	var encountered = [];
+	function one_level(entity, depth)
+	{
+	    if ( depth > MAX_HIGHLIGHT_NEIGHBORS_DEPTH )
+		return;
+	    var neighbors = entity.get_neighbors(entity), i, n, neighbor;
+	    for ( i = 0, n = neighbors.length; i < n; ++i )
+	    {
+		neighbor = neighbors[i];
+		if ( encountered.indexOf(neighbor) < 0 )
+		{
+		    encountered.push(neighbor);
+		    get_svg_node(neighbor)
+			.attr("filter", "url(#highlit_heighbor_depth_" + depth + ")");
+		    one_level(neighbor, depth + 1);
+		}
+	    }
+	}
+	get_svg_node(d.entity).attr("filter", "url(#highlit_heighbor_depth_0)");
+	one_level(d.entity, 1);
+    }
+
+    function entity_mouseleave(d)
+    {
+	unclassify_all_entities();
+    }
+
     node_sel.enter().append("circle")
         .attr("class", function(d) 
 	      {
@@ -254,6 +298,8 @@ function layout()
         .attr("cy", function(d) { return d.y; })
         .attr("r", function(d) { return d.size; })
 	.attr("style", function(d) { return d.pattern_id ? "fill: url(#" + d.pattern_id + ")" : ""; })
+	.on("mouseenter", entity_mouseenter)
+	.on("mouseleave", entity_mouseleave)
         .call(force.drag);
     node_sel.exit().remove();
 
@@ -264,24 +310,6 @@ function layout()
     text_sel.exit().remove();
 
 
-/*
-    setTimeout(
-	function()
-	{
-	    var more_nodes = [], i;
-	    for ( j = 0; j < d3_nodes.length; ++j )
-		more_nodes.push(d3_nodes[j]);
-	    more_nodes.push({
-		source : null,
-		target : null,
-		link : null,
-		link_num : 100
-            });
-	    node_sel.data(more_nodes).enter().append("circle");
-	    console.log("Done!");
-	}, 5000);
-*/
-
     // http://bl.ocks.org/benzguo/4370043
     function rescale()
     {
@@ -290,12 +318,6 @@ function layout()
 	vis.attr("transform",
 		 "translate(" + trans + ")"
 		 + " scale(" + scale + ")");
-    }
-
-    function mousedown()
-    {
-	// alert("Woo");
-	// vis.call(d3.behavior.zoom().on("zoom"), rescale);
     }
 
     function tick()
@@ -317,6 +339,5 @@ function layout()
 
 	text_sel
             .attr("transform", function(d) { return "translate(" + (d.x) + "," + (d.y - d.size) + ")"; });
-            // .attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
     }
 }
