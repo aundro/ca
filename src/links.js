@@ -77,9 +77,8 @@ function LinkSet(raw_desc)
 // ---------------------------------------------------------------------------
 (function ()
  {
-     var _ID = "[a-zA-Z0-9_\\-]*"; //
      var _LT = "[a-zA-Z0-9]*";     // link type
-     LinkSet.prototype._BLOOD_LINK_REGEX = new RegExp("^blood:(" + _ID + "):\\s*(.*)")
+     LinkSet.prototype._BLOOD_LINK_REGEX = new RegExp("^blood:(" + window.utils.REGEX_FRAGMENT_ID + "):\\s*(.*)")
      LinkSet.prototype._LINK_REGEX       = new RegExp("^(" + _LT + "):\\s*(.*)")
  }) ();
 

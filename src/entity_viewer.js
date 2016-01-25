@@ -1,6 +1,9 @@
 
-function EntityViewer(id)
+function EntityViewer(id, opts)
 {
+    this.opts = opts || {}
+    if ( !this.opts["body_id_handler"] )
+	this.opts["body_id_handler"] = EntityViewer._DEFAULT_BODY_ID_HANDLER;
     this.el = d3.select(id);
     this.original_html = this.el.html();
 }
@@ -33,8 +36,8 @@ EntityViewer.prototype.show_entity = function(entity)
 	    });
 	this.el.select(".pics").html(parts.join(""));
     }
-    this.el.select(".brief").html(entity.brief || "");
-    this.el.select(".body").html(entity.body);
+    this.el.select(".brief").html(this._process_text(entity.brief || ""));
+    this.el.select(".body").html(this._process_text(entity.body.join("")));
     window.set_anchor_param("view-entity", entity.id);
 };
 
@@ -51,4 +54,23 @@ EntityViewer.prototype.restore_entity_from_url = function()
 	}
     }
     return false;
+};
+
+EntityViewer.prototype._process_text = function(text)
+{
+    text = text.replace(EntityViewer._REGEX_ID_REF, this._bounce_to_body_id_handler.bind(this));
+    return text;
+};
+
+EntityViewer.prototype._bounce_to_body_id_handler = function(clob)
+{
+    return this.opts["body_id_handler"](clob.substr(1)); // drop the '@'
 }
+
+EntityViewer._REGEX_ID_REF = RegExp("@" +  window.utils.REGEX_FRAGMENT_ID, "g");
+
+EntityViewer._DEFAULT_BODY_ID_HANDLER = function(id)
+{
+    var entity = get_entity_by_id(id);
+    return entity ? entity.name : id;
+};

@@ -323,7 +323,21 @@ function layout()
 	unclassify_all_entities();
     }
 
-    var side_panel = new EntityViewer("#side-panel");
+    var side_panel = new EntityViewer(
+	"#side-panel",
+	{
+	    body_id_handler : function(id)
+	    {
+		var entity = get_entity_by_id(id);
+		var repl_url = window.get_replacement_url(
+		    {
+			"id" : id
+		    },
+		    {
+		    });
+		return "<a href=\"" + repl_url +  "\">" + entity.name + "</a>";
+	    }
+	});
     if ( side_panel.restore_entity_from_url() )
 	side_panel.show();
     function entity_show(d)

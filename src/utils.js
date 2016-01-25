@@ -106,5 +106,31 @@ window.get_anchor_param = null;
 	 }
 	 return set;
      }
+     window.set_search_param = make_kvp_setter(window.get_search_params, function(kvps_str) { location.hash = '?' + kvps_str; });
      window.set_anchor_param = make_kvp_setter(window.get_anchor_params, function(kvps_str) { location.hash = '#' + kvps_str; });
+
+     window.get_replacement_url = function(search_kvps, anchor_kvps)
+     {
+	 // http://stackoverflow.com/questions/3213531/creating-a-new-location-object-in-javascript
+	 var a = document.createElement("a");
+	 a.href = window.location.href;
+	 var id, search_setter = make_kvp_setter(
+	     make_kvps_parser(function() { return a.search.replace('\?', ''); }),
+	     function(kvps_str) { a.search = '?' + kvps_str; });
+	 for ( id in search_kvps )
+	     if ( search_kvps.hasOwnProperty(id) )
+		 search_setter(id, search_kvps[id]);
+	 
+	 // FIXME: Same for anchor!
+	 // alert(a.outerHTML);
+	 return a.href;
+     }
  })();
+
+function Utils()
+{
+}
+
+Utils.REGEX_FRAGMENT_ID = "[a-zA-Z0-9_\\-]*";
+
+window.utils = Utils;
