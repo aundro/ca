@@ -31,6 +31,12 @@ function layout()
 		return d3_nodes[i];
     }
 
+    function d3_link_concerns(d3_link, entity0, entity1)
+    {
+	return d3_link.source.entity === entity0 && d3_link.target.entity === entity1
+            || d3_link.source.entity === entity1 && d3_link.target.entity === entity0;
+    }
+
     function d3_link_exists(entity0, entity1, link)
     {
 	var i, n, cur;
@@ -38,13 +44,9 @@ function layout()
 	{
 	    cur = d3_links[i];
 	    if ( cur.link.kind === link.kind
-              && (cur.source.entity === entity0 && cur.target.entity === entity1)
-               || (cur.source.entity === entity1 && cur.target.entity === entity0) )
-	    {
-		return true;
-	    }
+              && d3_link_concerns(cur, entity0, entity1) )
+		return cur;
 	}
-	return false;
     }
 
     function import_neighbors(entity, levels)
@@ -165,18 +167,43 @@ function layout()
     {
 	var filter = defs.append("filter");
 	filter.attr("id", "highlit_heighbor_depth_" + i)
-	    .attr("x", "-50%")
-	    .attr("y", "-50%")
-	    .attr("width", "200%")
-	    .attr("height", "200%");
+	    .attr("x", "-20")
+	    .attr("y", "-20")
+	    .attr("width", "500")
+	    .attr("height", "500");
+	filter.append("feOffset")
+	    .attr("in", "SourceAlpha")
+	    .attr("result", "offout")
+	    .attr("dx", "10")
+	    .attr("dy", "5");
 	filter.append("feGaussianBlur")
-	    .attr("in", "SourceGraphics")
+	    .attr("in", "offout")
 	    .attr("result", "offsetblur")
 	    .attr("stdDeviation", "15");
 	filter.append("feBlend")
 	    .attr("in", "SourceGraphic")
 	    .attr("in2", "offsetblur")
 	    .attr("mode", "normal");
+
+	filter = defs.append("filter");
+	filter.attr("id", "highlit_link_depth_" + i)
+	    .attr("x", "-20")
+	    .attr("y", "-20")
+	    .attr("width", "10000")
+	    .attr("height", "10000");
+	filter.append("feOffset")
+	    .attr("in", "SourceAlpha")
+	    .attr("result", "offout")
+	    .attr("dx", "0")
+	    .attr("dy", "0");
+	filter.append("feGaussianBlur")
+	    .attr("in", "offout")
+	    .attr("result", "offsetblur")
+	    .attr("stdDeviation", "3");
+	filter.append("feBlend")
+	    .attr("in", "SourceGraphic")
+	    .attr("in2", "offsetblur")
+	    .attr("mode", "normal")
     }
 
 
@@ -248,12 +275,20 @@ function layout()
     function unclassify_all_entities()
     {
 	for ( i = 0; i <= MAX_HIGHLIGHT_NEIGHBORS_DEPTH; ++i )
+	{
 	    node_sel.attr("filter", "");
+	    link_sel.attr("filter", "");
+	}
     }
 
     function get_svg_node(entity)
     {
 	return node_sel.filter(function (d) { return d.entity === entity; });
+    }
+
+    function get_svg_link(e0, e1)
+    {
+	return link_sel.filter(function (d) { return d3_link_concerns(d, e0, e1); })
     }
 
     function entity_mouseenter(d)
@@ -273,6 +308,8 @@ function layout()
 		    encountered.push(neighbor);
 		    get_svg_node(neighbor)
 			.attr("filter", "url(#highlit_heighbor_depth_" + depth + ")");
+		    get_svg_link(entity, neighbor)
+			.attr("filter", "url(#highlit_link_depth_" + depth + ")");
 		    one_level(neighbor, depth + 1);
 		}
 	    }
