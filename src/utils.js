@@ -49,26 +49,62 @@ function parse_el_cheapo_description(raw_desc, handlers)
         }
 }
 
-window.search_params_get = null;
-window.anchor_params = null;
+window.get_search_param = null;
+window.get_anchor_param = null;
 (function ()
  {
-     function parse_kvps_str(kvps_str)
+     function make_kvps_parser(getter)
      {
-         var i, n, kvp, obj = {}, kvps = kvps_str.split('&');
-         for ( i = 0, n = kvps.length; i < n; ++i )
-         {
-             kvp = kvps[i].split("=");
-             if ( kvp.length !== 2 )
+	 function parse()
+	 {
+             var i, n, kvp, obj = {}, kvps = getter().split('&');
+             for ( i = 0, n = kvps.length; i < n; ++i )
              {
-                 console.log("Ignoring malformed \"" + kvps[i] + "\"");
-                 continue;
+		 kvp = kvps[i].split("=");
+		 if ( kvp.length !== 2 )
+		 {
+                     console.log("Ignoring malformed \"" + kvps[i] + "\"");
+                     continue;
+		 }
+		 obj[kvp[0]] = decodeURIComponent(kvp[1]);
              }
-             obj[kvp[0]] = decodeURIComponent(kvp[1]);
-         }
-	 return obj;
+	     return obj;
+	 }
+	 return parse;
      }
 
-     window.search_params_get = parse_kvps_str(location.search.replace('\?',''));
-     window.anchor_params = parse_kvps_str(location.hash.replace('#', ''));
+     function make_kvp_getter(kvps_getter)
+     {
+	 function get(param)
+	 {
+	     return kvps_getter()[param];
+	 }
+	 return get;
+     }
+
+
+     window.get_search_params = make_kvps_parser(function() { return location.search.replace('\?', ''); });
+     window.get_search_param = make_kvp_getter(window.get_search_params);
+
+     window.get_anchor_params = make_kvps_parser(function() { return location.hash.replace('#', ''); });
+     window.get_anchor_param = make_kvp_getter(window.get_anchor_params);
+
+     function make_kvp_setter(kvps_getter, setter)
+     {
+	 function set(param, value)
+	 {
+	     var kvps = kvps_getter();
+	     if ( value )
+		 kvps[param] = value;
+	     else
+		 delete kvps[param];
+	     var serialized = [], id;
+	     for ( id in kvps )
+		 if ( kvps.hasOwnProperty(id) )
+		     serialized.push(id + "=" + encodeURIComponent(kvps[id]));
+	     setter(serialized.join("&"));
+	 }
+	 return set;
+     }
+     window.set_anchor_param = make_kvp_setter(window.get_anchor_params, function(kvps_str) { location.hash = '#' + kvps_str; });
  })();

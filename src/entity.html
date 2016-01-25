@@ -3,12 +3,21 @@
     @include{../tools/header_fragment.html}
     <title>Camarilla Ardente: Entity</title>
     <link rel="stylesheet" href="entity.css" type="text/css" />
+    <link rel="stylesheet" href="entity_viewer.css" type="text/css" />
     <script src="entity.js"></script>
+    <script src="entity_viewer.js"></script>
   </head>
   <body onload="init_entities() && init_links({auto_add_primo : true}) && layout()">
     @include{../data/entities.dat}
     @include{../data/links.dat}
     <div id="graph">
+    </div>
+    <div id="side-panel">
+      <div class="name-wrapper"><span class="name"></span></div>
+      <div class="pics"></div>
+      <div class="brief"></div>
+      <hr>
+      <div class="body"></div>
     </div>
   </body>
 </html>

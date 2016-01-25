@@ -9,8 +9,8 @@ MAX_HIGHLIGHT_NEIGHBORS_DEPTH = 1
 
 function layout()
 {
-    var focused_id = window.search_params_get["id"];
-    var levels = parseInt(window.search_params_get["levels"]);
+    var focused_id = window.get_search_param("id");
+    var levels = parseInt(window.get_search_param("levels"));
     if ( isNaN(levels) )
 	levels = 1;
 
@@ -323,6 +323,15 @@ function layout()
 	unclassify_all_entities();
     }
 
+    var side_panel = new EntityViewer("#side-panel");
+    if ( side_panel.restore_entity_from_url() )
+	side_panel.show();
+    function entity_show(d)
+    {
+	side_panel.show_entity(d.entity);
+	side_panel.show();
+    }
+
     node_sel.enter().append("circle")
         .attr("class", function(d) 
 	      {
@@ -337,6 +346,7 @@ function layout()
 	.attr("style", function(d) { return d.pattern_id ? "fill: url(#" + d.pattern_id + ")" : ""; })
 	.on("mouseenter", entity_mouseenter)
 	.on("mouseleave", entity_mouseleave)
+	.on("click", entity_show)
         .call(force.drag);
     node_sel.exit().remove();
 
