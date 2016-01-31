@@ -7,9 +7,8 @@
     <script src="entity.js"></script>
     <script src="entity_viewer.js"></script>
   </head>
-  <body onload="init_entities() && init_links({auto_add_primo : true}) && layout()">
-    @include{../data/entities.dat}
-    @include{../data/links.dat}
+  <body onload="parse_layers({auto_add_primo : true}); layout()">
+    @include-layer{../data/elysium1.dat}
     <div id="graph">
     </div>
     <div id="side-panel">

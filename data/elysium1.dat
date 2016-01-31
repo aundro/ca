@@ -1,6 +1,4 @@
 
-<div id="entities" class="data-container">
-
 id: camarilla
 name: La Camarilla
 type: sect
@@ -17,10 +15,8 @@ des membres de la secte.
 
 EOE
 
-@include{clan-brujah.dat}
+@include{elysium1/clan-brujah.dat}
 
 EOE
 
-@include{clan-gangrel.dat}
-
-</div>
+@include{elysium1/clan-gangrel.dat}

@@ -26,7 +26,7 @@ function VTree()
                         this.max_clan_influence = Math.max(
                                 this.max_clan_influence,
                                 this.compute_clan_influence_sum(
-                                        this.find_node(cur.id)));
+                                        this.find_node(cur.get_id())));
         }
 }
 
@@ -42,11 +42,11 @@ VTree.prototype.compute_clan_influence_sum = function(node)
 // ---------------------------------------------------------------------------
 VTree.prototype.find_or_create_node = function(entity)
 {
-        var node = this.find_node(entity.id), parent;
+        var node = this.find_node(entity.get_id()), parent;
         if ( !node )
         {
                 node = new VTree.Node(entity);
-                if ( !entity.group )
+                if ( !entity.get_group_id() )
                 {
                         // if toplevel, push it in tree right away
                         this.toplevels.push(node);
@@ -54,7 +54,7 @@ VTree.prototype.find_or_create_node = function(entity)
                 else
                 {
                         parent = this.find_or_create_node(
-                                this.get_entity_for_id(entity.group));
+                                this.get_entity_for_id(entity.get_group_id()));
                         parent.children.push(node);
                 }
         }
@@ -66,7 +66,7 @@ VTree.prototype.get_entity_for_id = function(id)
 {
         var i, n;
         for ( i = 0, n = window.entities.length; i < n; ++i )
-                if ( window.entities[i].id === id )
+                if ( window.entities[i].get_id() === id )
                         return window.entities[i];
         throw "No entity with ID: \"" + id + "\"";
 };
@@ -84,7 +84,7 @@ VTree.prototype.find_node1 = function(nodes, id)
         for ( i = 0, n = nodes.length; i < n; ++i )
         {
                 node = nodes[i];
-                if ( node.entity.id === id )
+                if ( node.entity.get_id() === id )
                         return node;
 
                 fnd = this.find_node1(node.children, id);

@@ -39,7 +39,7 @@ function layout()
             // .on("click", function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); });
             .on("click",
                 function(d) {
-                        window.location = "entity.html?id=" + encodeURIComponent(d.entity.id)
+                        window.location = "entity.html?id=" + encodeURIComponent(d.entity.get_id())
                         d3.event.stopPropagation();
                 });
 
@@ -50,7 +50,7 @@ function layout()
             .attr("class", "label")
         // .style("fill-opacity", function(d) { return d.parent === root ? 1 : 0; })
         // .style("display", function(d) { return d.parent === root ? null : "none"; })
-            .text(function(d) { return d.name; });
+            .text(function(d) { return d.get_name(); });
 
         var node = svg.selectAll("circle,text");
 

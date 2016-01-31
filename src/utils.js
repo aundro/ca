@@ -1,4 +1,22 @@
 
+(function ()
+ {
+     function assert(condition, message)
+     {
+	 if (!condition)
+	 {
+             message = message || "Assertion failed";
+             if (typeof Error !== "undefined") {
+		 throw new Error(message);
+             }
+             throw message; // Fallback
+	 }
+     }
+     if ( typeof(window.assert) === "undefined" )
+	 window.assert = assert;
+ }) ();
+
+
 // function parse_el_cheapo_descriptions(content_id, block_sep, block_handlers)
 // {
 //         var raw_el = document.getElementById(content_id);

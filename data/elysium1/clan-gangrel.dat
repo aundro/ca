@@ -26,6 +26,7 @@ EOE
 id: reginald_sigurson
 name: Réginald Sigurson
 handle: Réginald
+sire: unknown
 pics: Arnaud Liepin .jpg
 brief: Primogène du Clan
 type: vampire
@@ -43,6 +44,7 @@ EOE
 id: elizabeth_greenwald
 name: Elizabeth Greenwald
 handle: Lily
+sire: rhiannon
 pics:  Pauline Berger.jpg
 brief: Sauvage d’influence, legat gangrel
 type: vampire
@@ -56,11 +58,15 @@ son apparence fluette en compte. Derrière ce regard angélique et ces
 attitudes de skatteuse se cache une Gangrel séculaire redoutable.  ses
 origines scandinaves.
 
+-> todor_vujacic (type=intro) Todor fut introduit au clan par @elizabeth_greenwald,
+ce qui est vraiment cool. Note que des: deux-points: ici: n'est pas: problematique.
+
 EOE
 
 id: mattias_svendsen
 name: Mattias Svendsen
 handle: Mattias
+sire: reginald_sigurson
 pics:  Adrien Vandendriessche.jpg
 brief: Ethnologue Sauvage
 type: vampire
@@ -87,6 +93,7 @@ EOE
 id: jules_thibaut
 name: Jules Thibaut
 handle: Jules
+sire: elizabeth_greenwald
 brief: Goule du Primogène
 type: ghoul
 group: gangrel
@@ -103,6 +110,7 @@ EOE
 id: todor_vujacic
 name: Todor Vujacic
 handle: Todor
+sire: charo
 pics: Arnaud Diedren.jpg
 brief: Nouveau venu, introduit par @elizabeth_greenwald, etreint par...
 type: vampire
@@ -116,6 +124,7 @@ EOE
 id: ewa
 name: Ewa
 brief: Partie en Amerique, elle fut de retour au 19e siecle
+sire: unknown
 type: vampire
 group: gangrel
 influence: 1
@@ -127,6 +136,7 @@ EOE
 id: rhiannon
 name: Rhiannon
 brief: Infante d'Ewa, adaptee au mode de vie urbain
+sire: ewa
 type: vampire
 group: gangrel
 influence: 1
@@ -138,6 +148,7 @@ EOE
 id: julian
 name: Julian
 handle: Julian
+sire: reginald_sigurson
 brief: Vit dans les Pyrenees, revenu pour le rituel des voix ascendentes 2015
 type: vampire
 group: gangrel
@@ -149,6 +160,7 @@ EOE
 
 id: charo
 name: Charo
+sire: julian
 pics: Sarah Putlz.jpg
 brief: Vit dans les Pyrenees, sur Liege pour raisons de misbrouilles avec les Lasombras (Sabbat) la-bas en Espagne.
 type: vampire

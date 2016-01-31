@@ -24,11 +24,13 @@ la Célérité et la Présence
 
 EOE
 
-id: primo_brujah
-name: Primogène Brujah (TBD)
+id: victor
+name: Victor
 type: vampire
 tags: primogene
+sire: unknown
 group: brujah
+sire: unknown
 influence: 100
 
 Unknown.
