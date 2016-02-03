@@ -231,7 +231,7 @@ function layout()
 	        var marker = [];
 	        if ( d.link.kind === "infant-of" )
 	        {
-                        var sire = d.source.entity.get_sire();
+                        var sire = d.link.linkset.target;
 	                if ( is_marker_start && d.target.entity === sire
                           || !is_marker_start && d.source.entity === sire )
 	                {
@@ -239,9 +239,10 @@ function layout()
 		                marker.push((is_marker_start && d.target.entity === sire) ? "in" : "out");
 		                if ( is_marker_start && d.source.entity.get_id() === focused_id
                                   || !is_marker_start && d.target.entity.get_id() === focused_id )
-		                {
+                                {
 		                        marker.push("_focused");
 		                }
+                                marker.push(")");
 	                }		    
 	        }
 	        return marker.join("");

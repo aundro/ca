@@ -95,7 +95,7 @@ Entity.parse_raw_desc = function(raw_desc)
 
                 if ( !linkset )
                 {
-                        linkset = new LinkSet(target);
+                        linkset = new LinkSet(data.id, target);
                         data.linksets.push(linkset);
                 }
 
