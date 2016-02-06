@@ -151,4 +151,52 @@ function Utils()
 
 Utils.REGEX_FRAGMENT_ID = "[a-zA-Z0-9_\\-]*";
 
+Utils.extend = function(r, s, px)
+{
+        assert(r && s);
+        var sp = s.prototype, rp = Object.create(sp);
+        r.prototype = rp;
+
+        rp.constructor = r;
+        r.superclass = sp;
+
+        if (s != Object && sp.constructor == Object.prototype.constructor)
+        {
+                sp.constructor = s;
+        }
+
+        if (px)
+        {
+                var id;
+                for ( id in px )
+                        if ( px.hasOwnProperty(id) )
+                                rp[id] = px[id];
+        }
+
+        return r;
+};
 window.utils = Utils;
+
+// Inheritance
+
+
+Function.prototype.inheritsFrom = function( parentClassOrObject )
+{
+	if ( parentClassOrObject.constructor == Function ) 
+	{ 
+		//Normal Inheritance 
+                this.prototype = new parentClassOrObject;
+                this.prototype.constructor = this;
+                this.prototype.parent = parentClassOrObject.prototype;
+	} 
+	else 
+	{ 
+		//Pure Virtual Inheritance 
+		this.prototype = parentClassOrObject;
+		this.prototype.constructor = this;
+		this.prototype.parent = parentClassOrObject;
+	} 
+	return this;
+} 
+
+

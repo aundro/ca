@@ -1,31 +1,16 @@
 
-#side-panel
-{
-    visibility: hidden;
-    width: 30%;
-    position: absolute;
-    right: 0;
-    top: 0;
-    height: 100%;
-    overflow: auto;
-    opacity: 0.90;
-    border-left: 2px solid black;
-    background-color: white;
-    padding: 6px;
-}
-
-#side-panel .name-wrapper
+.entity-viewer .name-wrapper
 {
     font-size: larger;
     text-align: center;
 }
 
-#side-panel .name-wrapper .name
+.entity-viewer .name-wrapper .name
 {
     font-weight: bold;
 }
 
-#side-panel .pics img
+.entity-viewer .pics img
 {
     max-width: 120px;
     max-height: 120px;

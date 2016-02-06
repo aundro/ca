@@ -4,24 +4,11 @@ function EntityViewer(id, opts)
         this.opts = opts || {}
         if ( !this.opts["body_id_handler"] )
 	        this.opts["body_id_handler"] = EntityViewer._DEFAULT_BODY_ID_HANDLER;
-        this.el = d3.select(id);
-        this.original_html = this.el.html();
+
+        EntityViewer.superclass.constructor.call(this, id, opts, "entity-viewer");
 }
 
-EntityViewer.prototype.show = function()
-{
-        return this.set_visible(true);
-}
-
-EntityViewer.prototype.hide = function()
-{
-        return this.set_visible(false);
-}
-
-EntityViewer.prototype.set_visible = function(vis)
-{
-        this.el.style("visibility", vis ? "visible" : "hidden");
-};
+Utils.extend(EntityViewer, Widget);
 
 EntityViewer.prototype.show_entity = function(entity)
 {
