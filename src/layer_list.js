@@ -2,6 +2,7 @@
 function LayerList(id, opts)
 {
         LayerList.superclass.constructor.call(this, id, opts, "layer-list");
+        this.events = d3.dispatch("layer_visibility_changed");
 }
 
 Utils.extend(LayerList, TemplateWidget);
@@ -17,7 +18,7 @@ LayerList.prototype.init = function()
                 li.append("input")
                         .attr("type", "checkbox")
                         .attr("id", id)
-                        .attr("checked", "true")
+                        .property("checked", true)
                         .on("change",
                             function ()
                             {
@@ -29,5 +30,7 @@ LayerList.prototype.init = function()
 
 LayerList.prototype.on_cb_changed = function(cb)
 {
-        alert(cb.id);
+        var vis = !!cb.checked;
+        var layer = cb.id.substring(3); // skip "cb_"
+        this.events.layer_visibility_changed(layer, vis);
 };

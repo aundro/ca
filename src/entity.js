@@ -35,6 +35,7 @@ function create_layer_list()
                 "#layer-list");
         layer_list.init();
         layer_list.show();
+        return layer_list;
 }
 
 function layout()
@@ -353,11 +354,17 @@ function layout()
         }
 
         var layer_list = create_layer_list();
+        layer_list.events.on(
+                "layer_visibility_changed",
+                function(layer, visible)
+                {
+                        vis.selectAll(".layer_" + layer).style("visibility", visible ? "visible" : "hidden")
+                })
 
         node_sel.enter().append("circle")
                 .attr("class", function(d) 
 	              {
-		              var parts = ["entity"];
+		              var parts = ["entity", "layer_" + d.entity.get_introduction_layer_id()];
 		              if ( d.entity.get_id() === focused_id )
 		                      parts.push("focused_entity");
 		              return parts.join(" ");
@@ -375,7 +382,9 @@ function layout()
         // vertices labels
         var text_sel = vis.selectAll("text")
 	    .data(d3_nodes, function(d) { return d.name; });
-        text_sel.enter().append("text").attr("class", "handle").text(function(d) { return d.handle; });
+        text_sel.enter().append("text")
+                .attr("class", function(d) { return "handle layer_" + d.entity.get_introduction_layer_id();} )
+                .text(function(d) { return d.handle; });
         text_sel.exit().remove();
 
 
