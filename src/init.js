@@ -8,6 +8,11 @@
                 layers.push(id);
         }
 
+        function get_layers()
+        {
+                return layers.slice();
+        }
+
         function import_desc(raw_desc)
         {
                 var data = Entity.parse_raw_desc(raw_desc);
@@ -49,6 +54,7 @@
                 return cp;
         }
 
+        window.get_layers = get_layers;
         window.register_layer = register_layer;
         window.parse_layers = parse_layers;
         window.get_layer_currently_being_parsed = get_layer_currently_being_parsed;

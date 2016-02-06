@@ -1,0 +1,7 @@
+
+.layer-list .contents > ul
+{
+    list-style-type: none;
+    padding: 6px;
+    margin: 0;
+}

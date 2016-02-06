@@ -4,8 +4,10 @@
     <title>Camarilla Ardente: Entity</title>
     <link rel="stylesheet" href="entity.css" type="text/css" />
     <link rel="stylesheet" href="entity_viewer.css" type="text/css" />
+    <link rel="stylesheet" href="layer_list.css" type="text/css" />
     <script src="entity.js"></script>
     <script src="entity_viewer.js"></script>
+    <script src="layer_list.js"></script>
   </head>
   <body onload="parse_layers({auto_add_primo : true}); layout()">
     @include-layer{../data/elysium1.dat}
@@ -18,6 +20,9 @@
       <div class="brief"></div>
       <hr>
       <div class="body"></div>
+    </div>
+    <div id="layer-list">
+      <div class="contents"></div>
     </div>
   </body>
 </html>

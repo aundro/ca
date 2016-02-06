@@ -52,7 +52,7 @@ marker path
     top: 0;
     height: 100%;
     overflow: auto;
-    opacity: 0.90;
+    opacity: 0.93;
     border-left: 2px solid black;
     background-color: white;
     padding: 6px;
@@ -60,10 +60,15 @@ marker path
 
 /* layers list */
 
-#layers-list
+#layer-list
 {
     visibility: hidden;
     position: absolute;
     left: 0;
     bottom: 0;
+    opacity: 0.93;
+    border-top: 2px solid black;
+    border-right: 2px solid black;
+    background-color: white;
+    padding: 6px;
 }

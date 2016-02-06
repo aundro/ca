@@ -8,11 +8,19 @@ function Entity(layer0_data)
         this._id = this.get_id(); // for debugging purposes only
 }
 
+Entity.LAYER_ID_KEY = "__layer_id__";
+
 // ---------------------------------------------------------------------------
 Entity.prototype.get_id = function()
 {
         return this.layers[0].id;
 };
+
+// ---------------------------------------------------------------------------
+Entity.prototype.get_introduction_layer_id = function()
+{
+        return this.layers[0][Entity.LAYER_ID_KEY];
+}
 
 // ---------------------------------------------------------------------------
 Entity.prototype.toString = function()
@@ -81,10 +89,10 @@ Entity.prototype.get_pics = function()
 Entity.parse_raw_desc = function(raw_desc)
 {
         var data = {
-                "__layer_id__" : get_layer_currently_being_parsed(true),
                 "body" : [],
                 "linksets" : []
         };
+        data[Entity.LAYER_ID_KEY] = get_layer_currently_being_parsed(true);
 
         function new_link_to(target, kind, metadata)
         {
@@ -150,14 +158,14 @@ Entity.prototype.get_data_for_layer = function(layer_id)
 {
         var i, n;
         for ( i = 0, n = this.layers.length; i < n; ++i )
-                if ( this.layers[i]["__layer_id__"] === layer_id )
+                if ( this.layers[i][Entity.LAYER_ID_KEY] === layer_id )
                         return this.layers[i];
 };
 
 // ---------------------------------------------------------------------------
 Entity.prototype.import_layer_data = function(data, first_layer)
 {
-        var layer_id = data["__layer_id__"];
+        var layer_id = data[Entity.LAYER_ID_KEY];
         function err(msg) { throw new Error(msg + " (for \"" + data.id + "\", layer \"" + layer_id + "\")"); }
 
         if ( this.get_data_for_layer(layer_id) )

@@ -4,9 +4,16 @@ function Link(linkset, kind, metadata)
 {
         this.linkset = linkset;
         this.kind = kind;
+        this.layer_id = get_layer_currently_being_parsed(true);
         this.metadata = metadata || {};
         this.body = [];
 }
+
+// ---------------------------------------------------------------------------
+Link.prototype.get_layer_id = function()
+{
+        return this.layer_id;
+};
 
 // ---------------------------------------------------------------------------
 function LinkSet(source, target)

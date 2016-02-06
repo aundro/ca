@@ -7,6 +7,36 @@ links_distances = {
 }
 MAX_HIGHLIGHT_NEIGHBORS_DEPTH = 1
 
+function create_side_panel()
+{
+        var side_panel = new EntityViewer(
+	        "#side-panel",
+	        {
+	                body_id_handler : function(id)
+	                {
+		                var entity = get_entity_by_id(id);
+		                var repl_url = window.get_replacement_url(
+		                        {
+			                        "id" : id
+		                        },
+		                        {
+		                        });
+		                return "<a href=\"" + repl_url +  "\">" + entity.get_name() + "</a>";
+	                }
+	        });
+        if ( side_panel.restore_entity_from_url() )
+	        side_panel.show();
+        return side_panel;
+}
+
+function create_layer_list()
+{
+        var layer_list = new LayerList(
+                "#layer-list");
+        layer_list.init();
+        layer_list.show();
+}
+
 function layout()
 {
         var focused_id = window.get_search_param("id");
@@ -224,8 +254,6 @@ function layout()
 
         force.nodes(d3_nodes).links(d3_links).start();
 
-        var link_sel = vis.append("svg:g").selectAll("path").data(force.links());
-
         function get_marker_for_link(d, is_marker_start)
         {
 	        var marker = [];
@@ -249,9 +277,10 @@ function layout()
         }
 
         // links management
+        var link_sel = vis.selectAll("path").data(force.links());
         link_sel.enter()
                 .append("svg:path")
-    	        .attr("class", function(d) { return "link link_" + d.link.kind; })
+    	        .attr("class", function(d) { return "layer_" + d.link.get_layer_id() + " link link_" + d.link.kind; })
 	        .attr("marker-start", function(d) { return get_marker_for_link(d, true); })
 	        .attr("marker-end", function(d) { return get_marker_for_link(d, false); })
     	        .on("mouseover", function(d) { ; });
@@ -316,28 +345,14 @@ function layout()
 	        unclassify_all_entities();
         }
 
-        var side_panel = new EntityViewer(
-	        "#side-panel",
-	        {
-	                body_id_handler : function(id)
-	                {
-		                var entity = get_entity_by_id(id);
-		                var repl_url = window.get_replacement_url(
-		                        {
-			                        "id" : id
-		                        },
-		                        {
-		                        });
-		                return "<a href=\"" + repl_url +  "\">" + entity.get_name() + "</a>";
-	                }
-	        });
-        if ( side_panel.restore_entity_from_url() )
-	        side_panel.show();
+        var side_panel = create_side_panel();
         function entity_show(d)
         {
 	        side_panel.show_entity(d.entity);
 	        side_panel.show();
         }
+
+        var layer_list = create_layer_list();
 
         node_sel.enter().append("circle")
                 .attr("class", function(d) 

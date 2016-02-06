@@ -1,5 +1,5 @@
 
-function Widget(id, opts, cssClass)
+function TemplateWidget(id, opts, cssClass)
 {
         this.opts = opts || {}
         this.el = d3.select(id);
@@ -8,17 +8,17 @@ function Widget(id, opts, cssClass)
                 this.el.classed(cssClass, true);
 }
 
-Widget.prototype.show = function()
+TemplateWidget.prototype.show = function()
 {
         return this.set_visible(true);
 }
 
-Widget.prototype.hide = function()
+TemplateWidget.prototype.hide = function()
 {
         return this.set_visible(false);
 }
 
-Widget.prototype.set_visible = function(vis)
+TemplateWidget.prototype.set_visible = function(vis)
 {
         this.el.style("visibility", vis ? "visible" : "hidden");
 };

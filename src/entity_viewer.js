@@ -8,7 +8,7 @@ function EntityViewer(id, opts)
         EntityViewer.superclass.constructor.call(this, id, opts, "entity-viewer");
 }
 
-Utils.extend(EntityViewer, Widget);
+Utils.extend(EntityViewer, TemplateWidget);
 
 EntityViewer.prototype.show_entity = function(entity)
 {
