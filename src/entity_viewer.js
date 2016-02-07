@@ -29,7 +29,7 @@ EntityViewer.prototype.show_entity = function(entity)
         window.set_anchor_param("view-entity", entity.get_id());
 };
 
-EntityViewer.prototype.restore_entity_from_url = function()
+EntityViewer.prototype.restore_from_url = function()
 {
         var view_entity = window.get_anchor_param("view-entity"), entity;
         if ( view_entity )

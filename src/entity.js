@@ -24,7 +24,7 @@ function create_side_panel()
 		                return "<a href=\"" + repl_url +  "\">" + entity.get_name() + "</a>";
 	                }
 	        });
-        if ( side_panel.restore_entity_from_url() )
+        if ( side_panel.restore_from_url() )
 	        side_panel.show();
         return side_panel;
 }
@@ -34,6 +34,7 @@ function create_layer_list()
         var layer_list = new LayerList(
                 "#layer-list");
         layer_list.init();
+        layer_list.restore_from_url();
         layer_list.show();
         return layer_list;
 }

@@ -33,4 +33,31 @@ LayerList.prototype.on_cb_changed = function(cb)
         var vis = !!cb.checked;
         var layer = cb.id.substring(3); // skip "cb_"
         this.events.layer_visibility_changed(layer, vis);
+
+        var all_vis = [];
+        d3.selectAll("input", d3.select(".contents", this.el))
+                .each(function ()
+                      {
+                              if ( this.checked )
+                                      all_vis.push(this.id.substring(3)); // skip "cb_"
+                      })
+        window.set_anchor_param("layer-list", all_vis.join(","))
+};
+
+LayerList.prototype.restore_from_url = function()
+{
+        var visible = window.get_anchor_param("layer-list");
+        if ( visible )
+        {
+                var vis = visible.split(",")
+                d3.selectAll("input", d3.select(".contents", this.el))
+                        .each(function ()
+                              {
+                                      var layer = this.id.substring(3); // skip "cb_"
+                                      this.checked = vis.indexOf(layer) > -1;
+                              });
+
+                return true;
+        }
+        return false;
 };
